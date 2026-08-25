@@ -1,17 +1,18 @@
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard, MapPin, Package, MessageSquare,
-  LogOut, ChevronLeft, ChevronRight, Settings,
+  LogOut, ChevronLeft, ChevronRight, Settings, GalleryHorizontal,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
 
 const NAV = [
-  { to: "/",           icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/districts",  icon: MapPin,           label: "Districts" },
-  { to: "/packages",   icon: Package,          label: "Packages" },
-  { to: "/enquiries",  icon: MessageSquare,    label: "Enquiries" },
-  { to: "/settings",   icon: Settings,         label: "Settings" },
+  { to: "/",            icon: LayoutDashboard,   label: "Dashboard" },
+  { to: "/hero-slider", icon: GalleryHorizontal, label: "Hero Slider" },
+  { to: "/districts",   icon: MapPin,            label: "Districts" },
+  { to: "/packages",    icon: Package,           label: "Packages" },
+  { to: "/enquiries",   icon: MessageSquare,     label: "Enquiries" },
+  { to: "/settings",    icon: Settings,          label: "Settings" },
 ];
 
 export default function Sidebar() {

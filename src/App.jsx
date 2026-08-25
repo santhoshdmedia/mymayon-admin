@@ -5,6 +5,7 @@ import Login      from "./pages/Login";
 import Dashboard  from "./pages/Dashboard";
 import Districts  from "./pages/Districts";
 import Packages   from "./pages/Packages";
+import HeroSlider from "./pages/HeroSlider";
 import Enquiries  from "./pages/Enquiries";
 import Settings   from "./pages/Settings";
 import { Spinner } from "./components/ui";
@@ -25,6 +26,7 @@ export default function App() {
             <Route index              element={<Dashboard />} />
             <Route path="districts"  element={<Districts />} />
             <Route path="packages"   element={<Packages />} />
+            <Route path="hero-slider" element={<HeroSlider />} />
             <Route path="enquiries"  element={<Enquiries />} />
             <Route path="settings"   element={<Settings />} />
           </Route>

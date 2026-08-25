@@ -53,4 +53,18 @@ export const api = {
   enquiries:      (q="")  => req("GET",    `/enquiries?${q}`),
   updateEnquiry:  (id, b) => req("PUT",    `/enquiries/${id}`, b),
   deleteEnquiry:  (id)    => req("DELETE", `/enquiries/${id}`),
+
+  // Hero slider
+  heroSlides:        ()      => req("GET",    "/hero-slides/all"),
+  heroSlide:         (id)    => req("GET",    `/hero-slides/${id}`),
+  createHeroSlide:   (b)     => req("POST",   "/hero-slides", b),
+  updateHeroSlide:   (id, b) => req("PUT",    `/hero-slides/${id}`, b),
+  deleteHeroSlide:   (id)    => req("DELETE", `/hero-slides/${id}`),
+  reorderHeroSlides: (order) => req("PATCH",  "/hero-slides/reorder", { order }),
+  uploadHeroSlideImage: (id, file) => {
+    const fd = new FormData();
+    fd.append("image", file);
+    return upload(`/hero-slides/${id}/image`, fd);
+  },
+  deleteHeroSlideImage: (id) => req("DELETE", `/hero-slides/${id}/image`),
 };
