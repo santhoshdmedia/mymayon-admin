@@ -1,13 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import AdminLayout from "./components/layout/AdminLayout";
-import Login      from "./pages/Login";
-import Dashboard  from "./pages/Dashboard";
-import Districts  from "./pages/Districts";
-import Packages   from "./pages/Packages";
-import HeroSlider from "./pages/HeroSlider";
-import Enquiries  from "./pages/Enquiries";
-import Settings   from "./pages/Settings";
+import Login         from "./pages/Login";
+import Dashboard     from "./pages/Dashboard";
+import Announcements from "./pages/Announcements";
+import GalleryAdmin  from "./pages/GalleryAdmin";
+import Districts     from "./pages/Districts";
+import Packages      from "./pages/Packages";
+import HeroSlider    from "./pages/HeroSlider";
+import Enquiries     from "./pages/Enquiries";
+import Settings      from "./pages/Settings";
 import { Spinner } from "./components/ui";
 
 function Guard({ children }) {
@@ -23,12 +25,14 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Guard><AdminLayout /></Guard>}>
-            <Route index              element={<Dashboard />} />
-            <Route path="districts"  element={<Districts />} />
-            <Route path="packages"   element={<Packages />} />
-            <Route path="hero-slider" element={<HeroSlider />} />
-            <Route path="enquiries"  element={<Enquiries />} />
-            <Route path="settings"   element={<Settings />} />
+            <Route index                element={<Dashboard />} />
+            <Route path="announcements" element={<Announcements />} />
+            <Route path="gallery"       element={<GalleryAdmin />} />
+            <Route path="hero-slider"   element={<HeroSlider />} />
+            <Route path="districts"     element={<Districts />} />
+            <Route path="packages"      element={<Packages />} />
+            <Route path="enquiries"     element={<Enquiries />} />
+            <Route path="settings"      element={<Settings />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -2,17 +2,20 @@ import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard, MapPin, Package, MessageSquare,
   LogOut, ChevronLeft, ChevronRight, Settings, GalleryHorizontal,
+  Megaphone, Image as ImageIcon,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
 
 const NAV = [
-  { to: "/",            icon: LayoutDashboard,   label: "Dashboard" },
-  { to: "/hero-slider", icon: GalleryHorizontal, label: "Hero Slider" },
-  { to: "/districts",   icon: MapPin,            label: "Districts" },
-  { to: "/packages",    icon: Package,           label: "Packages" },
-  { to: "/enquiries",   icon: MessageSquare,     label: "Enquiries" },
-  { to: "/settings",    icon: Settings,          label: "Settings" },
+  { to: "/",              icon: LayoutDashboard,   label: "Dashboard" },
+  { to: "/announcements", icon: Megaphone,         label: "Secondary Nav Ticker" },
+  { to: "/hero-slider",   icon: GalleryHorizontal, label: "Hero Slider" },
+  { to: "/gallery",       icon: ImageIcon,         label: "Photo Gallery" },
+  { to: "/districts",     icon: MapPin,            label: "Districts" },
+  { to: "/packages",      icon: Package,           label: "Packages" },
+  { to: "/enquiries",     icon: MessageSquare,     label: "Enquiries" },
+  { to: "/settings",      icon: Settings,          label: "Settings" },
 ];
 
 export default function Sidebar() {
@@ -20,7 +23,7 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside className={`flex flex-col h-screen bg-navy-800 text-white transition-all duration-300 flex-shrink-0 ${collapsed ? "w-16" : "w-56"}`}>
+    <aside className={`flex flex-col h-screen bg-navy-800 text-white transition-all duration-300 flex-shrink-0 ${collapsed ? "w-16" : "w-60"}`}>
       {/* Logo */}
       <div className={`flex items-center gap-3 px-4 py-5 border-b border-navy-700 ${collapsed ? "justify-center" : ""}`}>
         <div className="w-8 h-8 rounded-full bg-gold-500 flex items-center justify-center flex-shrink-0">
@@ -28,7 +31,7 @@ export default function Sidebar() {
         </div>
         {!collapsed && (
           <div>
-            <p className="font-bold text-sm leading-none">My Mayon</p>
+            <p className="font-bold text-sm leading-none text-white">My Mayon</p>
             <p className="text-navy-300 text-xs mt-0.5">Admin Panel</p>
           </div>
         )}
@@ -40,7 +43,7 @@ export default function Sidebar() {
           <NavLink key={to} to={to} end={to === "/"}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm font-medium ${
-                isActive ? "bg-gold-500 text-navy-900" : "text-navy-200 hover:bg-navy-700 hover:text-white"
+                isActive ? "bg-gold-500 text-navy-900 font-semibold shadow-sm" : "text-navy-200 hover:bg-navy-700 hover:text-white"
               } ${collapsed ? "justify-center" : ""}`
             }>
             <Icon className="w-5 h-5 flex-shrink-0" />
