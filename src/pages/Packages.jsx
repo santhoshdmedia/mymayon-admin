@@ -153,12 +153,13 @@ export default function Packages() {
     finally { setDeleting(false); }
   };
 
-  const handleImagesChange = (newImages) => {
-    // Update the imgModal's images in state
-    setImgModal(prev => prev ? { ...prev, images: newImages, heroImage: newImages[0]?.url || "" } : prev);
-    // Also refresh the packages grid so card shows updated image count
+  const handleImagesChange = (newImages, heroUrl) => {
+    const resolvedHero = heroUrl || newImages[0]?.url || "";
+    // Update the imgModal's images and heroImage in state
+    setImgModal(prev => prev ? { ...prev, images: newImages, heroImage: resolvedHero } : prev);
+    // Also refresh the packages grid so card shows updated image count and hero cover
     setPackages(prev => prev.map(p =>
-      p._id === imgModal?._id ? { ...p, images: newImages, heroImage: newImages[0]?.url || "" } : p
+      p._id === imgModal?._id ? { ...p, images: newImages, heroImage: resolvedHero } : p
     ));
   };
 
@@ -279,6 +280,7 @@ export default function Packages() {
           <PackageImageManager
             packageId={imgModal._id}
             images={imgModal.images || []}
+            heroImage={imgModal.heroImage}
             onImagesChange={handleImagesChange}
           />
         )}

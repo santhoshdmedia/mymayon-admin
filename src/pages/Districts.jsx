@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { MapPin, Plus, Search, Edit2, Trash2, CheckCircle2 } from "lucide-react";
+import { MapPin, Plus, Search, Edit2, Trash2, CheckCircle2, Images, Upload, ImageOff } from "lucide-react";
 import { api } from "../api";
 import {
   Card, Btn, Badge, Spinner, Toast, Confirm, Modal,
   PageHeader, EmptyState, Pagination, Input, Select, Textarea,
 } from "../components/ui";
+import DistrictImageManager from "../components/ui/DistrictImageManager";
 
 const REGIONS = ["Northern","Western","Central","Southern","Delta"];
 const FAITHS  = ["Hindu","Muslim","Christian","Buddhist","Jain"];
@@ -100,6 +101,12 @@ function DistrictForm({ initial = EMPTY, onSave, saving, error }) {
           {initial._id ? "Save Changes" : "Create District"}
         </Btn>
       </div>
+
+      {!initial._id && (
+        <p className="text-xs text-gray-400 text-center">
+          💡 Create the district first, then upload its cover image.
+        </p>
+      )}
     </form>
   );
 }
@@ -112,6 +119,7 @@ export default function Districts() {
   const [region,    setRegion]    = useState("");
   const [loading,   setLoading]   = useState(true);
   const [modal,     setModal]     = useState(null); // null | "create" | district_obj
+  const [imgModal,  setImgModal]  = useState(null); // null | district_obj
   const [saving,    setSaving]    = useState(false);
   const [saveErr,   setSaveErr]   = useState("");
   const [delId,     setDelId]     = useState(null);
@@ -144,11 +152,16 @@ export default function Districts() {
       if (modal?._id) {
         await api.updateDistrict(modal._id, data);
         showToast("District updated");
+        setModal(null); load();
       } else {
-        await api.createDistrict(data);
-        showToast("District created");
+        const res = await api.createDistrict(data);
+        showToast("District created — now upload its cover image!");
+        setModal(null);
+        if (res?.data?._id) {
+          setImgModal(res.data);
+        }
+        load();
       }
-      setModal(null); load();
     } catch (e) { setSaveErr(e.message); }
     finally { setSaving(false); }
   };
@@ -203,46 +216,77 @@ export default function Districts() {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {districts.map(d => (
-              <Card key={d._id} className="p-5 hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between gap-2 mb-3">
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-bold text-navy-800">{d.name}</h3>
-                      {d.tamilName && <span className="text-gold-500 text-sm italic">{d.tamilName}</span>}
-                    </div>
-                    <div className="flex items-center gap-2 mt-1 flex-wrap">
+            {districts.map(d => {
+              const thumb = d.heroImage || d.coverImage || "";
+              return (
+                <Card key={d._id} className="p-5 hover:shadow-md transition-shadow overflow-hidden flex flex-col">
+                  {/* Cover Photo Banner */}
+                  <div className="h-36 -mx-5 -mt-5 mb-4 bg-gradient-to-br from-navy-800 to-navy-950 relative overflow-hidden flex-shrink-0">
+                    {thumb ? (
+                      <img src={thumb} alt={d.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 bg-navy-950/40">
+                        <ImageOff className="w-6 h-6 mb-1 opacity-40 text-gold-400" />
+                        <span className="text-[11px] text-gray-400 font-medium">No cover image</span>
+                      </div>
+                    )}
+                    <div className="absolute top-2 left-2">
                       <Badge label={d.region} />
-                      {d.featured && <span className="text-xs text-gold-600 font-semibold bg-gold-50 px-2 py-0.5 rounded-full border border-gold-100">Featured</span>}
-                      {!d.isPublished && <span className="text-xs text-gray-400 font-semibold bg-gray-100 px-2 py-0.5 rounded-full">Draft</span>}
+                    </div>
+                    {d.featured && (
+                      <span className="absolute top-2 right-2 text-xs text-gold-700 font-bold bg-gold-100/90 backdrop-blur-sm px-2 py-0.5 rounded-full border border-gold-300">
+                        Featured
+                      </span>
+                    )}
+                    <button
+                      onClick={() => setImgModal(d)}
+                      className="absolute bottom-2 right-2 bg-black/60 hover:bg-black/85 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1.5 backdrop-blur-sm transition shadow-sm"
+                    >
+                      <Upload className="w-3 h-3 text-gold-400" /> {thumb ? "Change" : "Upload"} Cover
+                    </button>
+                  </div>
+
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-bold text-navy-800">{d.name}</h3>
+                        {d.tamilName && <span className="text-gold-500 text-sm italic">{d.tamilName}</span>}
+                      </div>
+                      <div className="flex items-center gap-2 mt-1 flex-wrap">
+                        {!d.isPublished && <span className="text-xs text-gray-400 font-semibold bg-gray-100 px-2 py-0.5 rounded-full">Draft</span>}
+                      </div>
+                    </div>
+                    <div className="flex gap-1 flex-shrink-0">
+                      <button onClick={() => setImgModal(d)} title="Manage Cover Photo"
+                        className="p-1.5 rounded-lg text-gray-400 hover:text-gold-600 hover:bg-gold-50 transition">
+                        <Images className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => { setModal(d); setSaveErr(""); }}
+                        className="p-1.5 rounded-lg text-gray-400 hover:text-navy-600 hover:bg-navy-50 transition">
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => setDelId(d._id)}
+                        className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
-                  <div className="flex gap-1 flex-shrink-0">
-                    <button onClick={() => { setModal(d); setSaveErr(""); }}
-                      className="p-1.5 rounded-lg text-gray-400 hover:text-navy-600 hover:bg-navy-50 transition">
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => setDelId(d._id)}
-                      className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  <p className="text-xs text-gray-500 mb-2 line-clamp-2">{d.presidingDeity}</p>
+                  <div className="flex items-center gap-4 text-xs text-gray-400">
+                    <span><MapPin className="inline w-3 h-3 mr-1" />{d.templeCount} temples</span>
+                    {d.idealSeason && <span>Best: {d.idealSeason}</span>}
                   </div>
-                </div>
-                <p className="text-xs text-gray-500 mb-2">{d.presidingDeity}</p>
-                <div className="flex items-center gap-4 text-xs text-gray-400">
-                  <span><MapPin className="inline w-3 h-3 mr-1" />{d.templeCount} temples</span>
-                  {d.idealSeason && <span>Best: {d.idealSeason}</span>}
-                </div>
-                {d.circuits?.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-3">
-                    {d.circuits.slice(0, 2).map(c => (
-                      <span key={c} className="text-xs bg-rose-50 text-rose-600 border border-rose-100 px-2 py-0.5 rounded-full">{c}</span>
-                    ))}
-                    {d.circuits.length > 2 && <span className="text-xs text-gray-400">+{d.circuits.length - 2} more</span>}
-                  </div>
-                )}
-              </Card>
-            ))}
+                  {d.circuits?.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-3">
+                      {d.circuits.slice(0, 2).map(c => (
+                        <span key={c} className="text-xs bg-rose-50 text-rose-600 border border-rose-100 px-2 py-0.5 rounded-full">{c}</span>
+                      ))}
+                      {d.circuits.length > 2 && <span className="text-xs text-gray-400">+{d.circuits.length - 2} more</span>}
+                    </div>
+                  )}
+                </Card>
+              );
+            })}
           </div>
           <Card className="px-4">
             <Pagination page={page} total={total} pageSize={12} onChange={setPage} />
@@ -263,6 +307,26 @@ export default function Districts() {
           saving={saving}
           error={saveErr}
         />
+      </Modal>
+
+      {/* Cover Image Manager Modal */}
+      <Modal
+        open={!!imgModal}
+        onClose={() => { setImgModal(null); load(); }}
+        title={`Cover Image: ${imgModal?.name || ""}`}
+        width="max-w-xl"
+      >
+        {imgModal && (
+          <DistrictImageManager
+            districtId={imgModal._id}
+            image={imgModal.heroImage || imgModal.coverImage}
+            onImageChange={(newUrl) => {
+              setImgModal(prev => prev ? { ...prev, heroImage: newUrl, coverImage: newUrl } : null);
+              setDistricts(prev => prev.map(item => item._id === imgModal._id ? { ...item, heroImage: newUrl, coverImage: newUrl } : item));
+              showToast(newUrl ? "Cover image updated" : "Cover image removed");
+            }}
+          />
+        )}
       </Modal>
 
       <Confirm open={!!delId} onClose={() => setDelId(null)} onConfirm={handleDelete}

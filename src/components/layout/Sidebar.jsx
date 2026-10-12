@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
+import logoEmblem from "../../assets/logo-emblem.png";
 
 const NAV = [
   { to: "/",              icon: LayoutDashboard,   label: "Dashboard" },
@@ -23,19 +24,18 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside className={`flex flex-col h-screen bg-navy-800 text-white transition-all duration-300 flex-shrink-0 ${collapsed ? "w-16" : "w-60"}`}>
+    <aside className={`flex flex-col h-screen bg-navy-900 text-white transition-all duration-300 flex-shrink-0 ${collapsed ? "w-16" : "w-60"}`}>
       {/* Logo */}
-      <div className={`flex items-center gap-3 px-4 py-5 border-b border-navy-700 ${collapsed ? "justify-center" : ""}`}>
-        <div className="w-8 h-8 rounded-full bg-gold-500 flex items-center justify-center flex-shrink-0">
-          <span className="text-navy-900 font-bold text-sm">M</span>
-        </div>
+      <div className={`flex items-center gap-3 px-4 py-5 border-b border-navy-800 ${collapsed ? "justify-center" : ""}`}>
+        <img src={logoEmblem} alt="My Mayon" className="h-8 w-auto object-contain flex-shrink-0" />
         {!collapsed && (
           <div>
-            <p className="font-bold text-sm leading-none text-white">My Mayon</p>
-            <p className="text-navy-300 text-xs mt-0.5">Admin Panel</p>
+            <p className="font-bold text-sm leading-none text-white font-display tracking-wider">MY MAYON</p>
+            <p className="text-gold-400 text-[10px] uppercase tracking-wider font-semibold mt-0.5">Admin Portal</p>
           </div>
         )}
       </div>
+
 
       {/* Nav */}
       <nav className="flex-1 py-4 space-y-1 px-2 overflow-y-auto">

@@ -4,12 +4,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        navy:  { 50:"#eef1f8",100:"#d8dff0",200:"#b2bfe1",300:"#8599cf",400:"#5d73bc",500:"#3d54a5",600:"#2c3f8a",700:"#1e2d6b",800:"#12294F",900:"#0a1a30" },
-        gold:  { 50:"#fdf9ee",100:"#f9eecc",200:"#f2db96",300:"#e9c45a",400:"#e0ae2a",500:"#C6992F",600:"#a67a1c",700:"#855e13" },
-        cream: "#F8F4EC",
+        navy:  { 50:"#f0f5fc",100:"#e0ecfb",200:"#bed3f4",300:"#83ace8",400:"#4b82d9",500:"#2260be",600:"#174a96",700:"#0f3775",800:"#0a2959",900:"#071f43" },
+        gold:  { 50:"#fdfbf7",100:"#faf2df",200:"#f4e3be",300:"#ebd094",400:"#dfbb66",500:"#d4a359",600:"#bc8a38",700:"#986c24" },
+        forest: { 50:"#f0f7f3",100:"#deede4",200:"#beddcb",300:"#95c5ac",400:"#66a788",500:"#3f8967",600:"#2a6e4f",700:"#1c573d",800:"#165b3d",900:"#0e3b2b" },
+        cream: "#faf8f4",
       },
       fontFamily: { sans:["Inter","system-ui","sans-serif"], display:["'Playfair Display'","serif"] },
     },
   },
   plugins: [],
 };
+

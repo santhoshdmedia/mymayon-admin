@@ -34,6 +34,12 @@ export const api = {
   createDistrict: (b) => req("POST", "/districts", b),
   updateDistrict: (id, b) => req("PUT", `/districts/${id}`, b),
   deleteDistrict: (id) => req("DELETE", `/districts/${id}`),
+  uploadDistrictImage: (id, file) => {
+    const fd = new FormData();
+    fd.append("image", file);
+    return upload(`/districts/${id}/image`, fd);
+  },
+  deleteDistrictImage: (id) => req("DELETE", `/districts/${id}/image`),
   packages: (q = "") => req("GET", `/packages?${q}`),
   package: (slug) => req("GET", `/packages/${slug}`),
   createPackage: (b) => req("POST", "/packages", b),

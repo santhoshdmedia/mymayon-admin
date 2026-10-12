@@ -4,7 +4,7 @@ import { api } from "../../api";
 
 const MAX = 5;
 
-export default function PackageImageManager({ packageId, images = [], onImagesChange }) {
+export default function PackageImageManager({ packageId, images = [], heroImage = "", onImagesChange }) {
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [settingHero, setSettingHero] = useState(null);
@@ -23,7 +23,7 @@ export default function PackageImageManager({ packageId, images = [], onImagesCh
     setError(""); setUploading(true);
     try {
       const r = await api.uploadPackageImages(packageId, toUpload);
-      onImagesChange(r.images);
+      onImagesChange(r.images, r.heroImage);
     } catch (e) {
       setError(e.message || "Upload failed");
     } finally {
@@ -36,7 +36,7 @@ export default function PackageImageManager({ packageId, images = [], onImagesCh
     setDeletingId(imageId);
     try {
       const r = await api.deletePackageImage(packageId, imageId);
-      onImagesChange(r.images);
+      onImagesChange(r.images, r.heroImage);
     } catch (e) { setError(e.message); }
     finally { setDeletingId(null); }
   };
@@ -45,7 +45,7 @@ export default function PackageImageManager({ packageId, images = [], onImagesCh
     setSettingHero(imageId);
     try {
       const r = await api.setHeroImage(packageId, imageId);
-      onImagesChange(r.images);
+      onImagesChange(r.images, r.heroImage);
     } catch (e) { setError(e.message); }
     finally { setSettingHero(null); }
   };
@@ -53,13 +53,13 @@ export default function PackageImageManager({ packageId, images = [], onImagesCh
   const handleSaveCaption = async (imageId) => {
     try {
       const r = await api.updatePackageImage(packageId, imageId, { caption: captionVal });
-      onImagesChange(r.images);
+      onImagesChange(r.images, r.heroImage);
     } catch (e) { setError(e.message); }
     finally { setEditCaption(null); }
   };
 
-  const sortedImages = [...images].sort((a, b) => a.order - b.order);
-  const heroUrl = sortedImages[0]?.url || "";
+  const sortedImages = [...images].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const currentHeroUrl = heroImage || sortedImages[0]?.url || "";
 
   return (
     <div className="space-y-4">
@@ -115,7 +115,7 @@ export default function PackageImageManager({ packageId, images = [], onImagesCh
       {sortedImages.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {sortedImages.map((img, i) => {
-            const isHero = i === 0;
+            const isHero = img.url === currentHeroUrl || (!currentHeroUrl && i === 0);
             const isDeleting = deletingId === img._id;
             const isSettingH = settingHero === img._id;
             const isEditing  = editCaption === img._id;
