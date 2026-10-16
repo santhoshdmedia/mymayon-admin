@@ -13,8 +13,8 @@ const FAITHS  = ["Hindu","Muslim","Christian","Buddhist","Jain"];
 const EMPTY = {
   name:"", slug:"", tamilName:"", region:"Northern",
   presidingDeity:"", faithCategories:[], circuits:[],
-  templeCount:0, idealSeason:"", overview:"",
-  highlights:[], featured:false, isPublished:true,
+  templeCount:0, idealSeason:"", tagline:"", overview:"",
+  highlights:[], experience:[], whoIsThisFor:"", featured:false, isPublished:true,
 };
 
 function toSlug(name) {
@@ -48,10 +48,14 @@ function DistrictForm({ initial = EMPTY, onSave, saving, error }) {
         <Input label="Presiding Deity" value={f.presidingDeity} onChange={e => set("presidingDeity", e.target.value)} placeholder="e.g. Meenakshi Amman" />
         <Input label="Temple Count" type="number" min={0} value={f.templeCount} onChange={e => set("templeCount", Number(e.target.value))} />
         <Input label="Ideal Season" value={f.idealSeason} onChange={e => set("idealSeason", e.target.value)} placeholder="e.g. Oct–Mar" />
+        <Input label="Tagline" value={f.tagline} onChange={e => set("tagline", e.target.value)} placeholder="e.g. The City That Never Sleeps" />
       </div>
 
       <Textarea label="Overview" value={f.overview} onChange={e => set("overview", e.target.value)}
-        placeholder="Brief description of the district…" rows={3} />
+        placeholder="Evocative chapter bio description of the district…" rows={4} />
+
+      <Input label="Who This Is For" value={f.whoIsThisFor} onChange={e => set("whoIsThisFor", e.target.value)}
+        placeholder="e.g. Culture seekers, foodies, pilgrims and first-time visitors" />
 
       <div>
         <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Faith Categories</p>
@@ -270,8 +274,8 @@ export default function Districts() {
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                  </div>
-                  <p className="text-xs text-gray-500 mb-2 line-clamp-2">{d.presidingDeity}</p>
+                  {d.tagline && <p className="text-xs font-semibold text-gold-700 italic mb-1 line-clamp-1">"{d.tagline}"</p>}
+                  <p className="text-xs text-gray-500 mb-2 line-clamp-2">{d.overview || d.presidingDeity}</p>
                   <div className="flex items-center gap-4 text-xs text-gray-400">
                     <span><MapPin className="inline w-3 h-3 mr-1" />{d.templeCount} temples</span>
                     {d.idealSeason && <span>Best: {d.idealSeason}</span>}
